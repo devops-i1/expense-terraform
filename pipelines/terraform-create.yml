@@ -8,11 +8,14 @@ pipelines:
         shallow_clone: false
         auto_update: true
         branch: main
+    secure_variables:
+      TF_VAR_vault_token: AES:SwJnjN2xu5okR7QrKc6/6Q==:8fYPWT/nNBNEjm0So1OXTL9nXRM/dfSTdyGgTzj9pII=
     stages:
       - DEV:
           fetch_materials: true
           environment_variables:
             env: dev
+            TF_VAR_vault_token: hvs.fGCsOzoMDS69Tl3pGFcvUCe5
           approval:
             type: manual
           jobs:
