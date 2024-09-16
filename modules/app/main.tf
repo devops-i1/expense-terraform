@@ -24,7 +24,7 @@ resource "null_resource" "ansible" {
       "sudo pip3.11 install ansible hvac",
       "ansible-pull -i localhost, -U https://github.com/devops-i1/expense-ansible.git get-secrets.yml -e env=${var.env} -e role_name=${var.component} -e vault_token=${var.vault_token}",
       "ansible-pull -i localhost, -U https://github.com/devops-i1/expense-ansible.git expense.yml -e env=${var.env} -e role_name=${var.component} -e @secrets.json -e @app.json",
-      "rm -f ~/secrets.json -e ~/app.json"
+      "rm -f ~/secrets.json  ~/app.json"
     ]
   }
 }
