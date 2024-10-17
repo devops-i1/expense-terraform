@@ -68,7 +68,8 @@ resource "null_resource" "ansible" {
 
 }
 
-resource "aws_route53_record" "record" {
+resource "aws_route53_record" "server" {
+  count   = var.lb_needed ? 0 : 1
   name    = "${var.component}-${var.env}"
   type    = "A"
   zone_id = var.zone_id
@@ -76,8 +77,17 @@ resource "aws_route53_record" "record" {
   ttl     = 30
 }
 
+resource "aws_route53_record" "load-balancer" {
+  count   = var.lb_needed ? 1 : 0
+  name    = "${var.component}-${var.env}"
+  type    = "CNAME"
+  zone_id = var.zone_id
+  records = [aws_lb.main[0].dns_name]
+  ttl     = 30
+}
+
 resource "aws_lb" "main" {
-  count              = var.lb_needed ? 1: 0
+  count              = var.lb_needed ? 1 : 0
   name               = "${var.env}-${var.component}-alb"
   internal           = var.lb_type == "public" ? false : true
   load_balancer_type = "application"
@@ -90,7 +100,7 @@ resource "aws_lb" "main" {
 }
 
 resource "aws_lb_target_group" "main" {
-  count                = var.lb_needed ? 1: 0
+  count                = var.lb_needed ? 1 : 0
   name                 = "${var.env}-${var.component}-tg"
   port                 = var.app_port
   protocol             = "HTTP"
@@ -108,14 +118,14 @@ resource "aws_lb_target_group" "main" {
 }
 
 resource "aws_lb_target_group_attachment" "main" {
-  count            = var.lb_needed ? 1: 0
+  count            = var.lb_needed ? 1 : 0
   target_group_arn = aws_lb_target_group.main[0].arn
   target_id        = aws_instance.instance.id
   port             = var.app_port
 }
 
 resource "aws_lb_listener" "front_end" {
-  count            = var.lb_needed ? 1: 0
+  count            = var.lb_needed ? 1 : 0
   load_balancer_arn = aws_lb.main[0].arn
   port              = var.app_port
   protocol          = "HTTP"
