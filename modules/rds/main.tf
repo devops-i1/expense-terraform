@@ -1,5 +1,5 @@
 resource "aws_db_instance" "main" {
-  identifier              = "${var.env}-${var.component}"
+  identifier              = "${var.component}-${var.env}"
   db_name                 = "mydb"
   engine                  = var.engine
   engine_version          = var.engine_version
@@ -21,16 +21,16 @@ resource "aws_db_instance" "main" {
 }
 
 resource "aws_db_parameter_group" "main" {
-  name   = "${var.env}-${var.component}-pg"
+  name   = "${var.component}-${var.env}-pg"
   family = var.family
 }
 
 resource "aws_db_subnet_group" "default" {
-  name       = "${var.env}-${var.component}-subnet-group"
+  name       = "${var.component}-${var.env}-subnet-group"
   subnet_ids = var.subnet_ids
 
   tags = {
-    Name = "${var.env}-${var.component}-subnet-group"
+    Name = "${var.component}-${var.env}-subnet-group"
   }
 }
 
